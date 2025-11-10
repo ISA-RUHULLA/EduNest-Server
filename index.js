@@ -125,7 +125,12 @@ async function run() {
     // ====== Enrollment Routes ======
     app.post('/enroll', async (req, res) => {
       try {
-        const enrollment = req.body;
+        const {courseId, userEmail, courseTitle} = req.body;
+        const existingEnrollment = await enrollCollection.findOne({ courseId, userEmail });
+        if (existingEnrollment) {
+          return res.status(400).send({ success: false, message: 'User already enrolled in this course' });
+        }
+        const enrollment = { courseId, userEmail, courseTitle, enrolledAt: new Date() };
         const result = await enrollCollection.insertOne(enrollment);
         res.send({ success: true, result });
       } catch (error) {
@@ -138,6 +143,16 @@ async function run() {
       try {
         const enrolledCourses = await enrollCollection.find({ userEmail: email }).toArray();
         res.send(enrolledCourses);
+      } catch (error) {
+        res.status(500).send({ success: false, error });
+      }
+    });
+
+    app.delete('/enroll/:id', async (req, res) => {
+      const { id } = req.params;
+      try {
+        const result = await enrollCollection.deleteOne({ _id: new ObjectId(id) });
+        res.send({ success: true, result });
       } catch (error) {
         res.status(500).send({ success: false, error });
       }
