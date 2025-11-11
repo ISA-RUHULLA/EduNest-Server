@@ -170,9 +170,10 @@ async function run() {
 }
 
 run().catch(console.dir);
+module.exports = app;
 
 // Start server
 // app.listen(port, () => {
 //   console.log(`Server running on port ${port}`);
 // });
-module.exports = app;
+
