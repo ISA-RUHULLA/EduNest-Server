@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB Connection
-const uri = process.env.MONGO_URI; 
+const uri = process.env.MONGO_URI;
 
 const client = new MongoClient(uri, {
   serverApi: {
@@ -125,7 +125,7 @@ async function run() {
     // ====== Enrollment Routes ======
     app.post('/enroll', async (req, res) => {
       try {
-        const {courseId, userEmail, courseTitle} = req.body;
+        const { courseId, userEmail, courseTitle } = req.body;
         const existingEnrollment = await enrollCollection.findOne({ courseId, userEmail });
         if (existingEnrollment) {
           return res.status(400).send({ success: false, message: 'User already enrolled in this course' });
@@ -172,6 +172,7 @@ async function run() {
 run().catch(console.dir);
 
 // Start server
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+// app.listen(port, () => {
+//   console.log(`Server running on port ${port}`);
+// });
+module.exports = app;
